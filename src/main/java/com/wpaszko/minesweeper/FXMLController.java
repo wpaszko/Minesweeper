@@ -7,6 +7,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -33,7 +35,12 @@ public class FXMLController {
     @FXML
     private TextArea textAreaFlags;
 
+    private Model model;
+
+
     public void initialize() {
+
+        model = new Model();
 
         addGraphics();
 
@@ -49,6 +56,35 @@ public class FXMLController {
         Image flagsPic = new Image("FlagsPic.jpg");
         viewTimePic.setImage(timePic);
         viewFlagsPic.setImage(flagsPic);
+    }
+
+    private void addIcon(int columnId, int rowId) {
+        Image coveredIcon = new Image("CoveredIcon.jpg");
+        Image uncoveredIcon = new Image("UncoveredIcon.jpg");
+        Image flagIcon = new Image("FlagIcon.jpg");
+        ImageView square = new ImageView(coveredIcon);
+        square.setFitHeight(30);
+        square.setFitWidth(30);
+        gridPane.add(square, columnId, rowId);
+
+        square.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (model.isCovered(columnId, rowId)) {
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    model.uncoverField(columnId, rowId);
+                } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    model.FlagUp(columnId, rowId);
+                }
+            }
+        });
+
+        model.getCoverProperty(columnId, rowId).addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(CoverState.UNCOVERED)) {
+                square.setImage(uncoveredIcon);
+            } else if (newValue.equals(CoverState.FLAGGED)) {
+                square.setImage(flagIcon);
+            }
+        });
+
     }
 
     @FXML
@@ -72,12 +108,4 @@ public class FXMLController {
         stage.show();
     }
 
-
-    private void addIcon(int columnId, int rowId) {
-        Image coveredIcon = new Image("CoveredIcon.jpg");
-        ImageView square = new ImageView(coveredIcon);
-        square.setFitHeight(30);
-        square.setFitWidth(30);
-        gridPane.add(square, columnId, rowId);
-    }
 }
