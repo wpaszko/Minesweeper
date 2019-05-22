@@ -74,6 +74,8 @@ public class FXMLController {
                 } else if (event.getButton().equals(MouseButton.SECONDARY)) {
                     model.FlagUp(columnId, rowId);
                 }
+            } else if ((model.isFlagged(columnId, rowId)) && (event.getButton().equals(MouseButton.SECONDARY))) {
+                model.FlagDown(columnId, rowId);
             }
         });
 
@@ -82,6 +84,8 @@ public class FXMLController {
                 square.setImage(uncoveredIcon);
             } else if (newValue.equals(CoverState.FLAGGED)) {
                 square.setImage(flagIcon);
+            } else if (newValue.equals(CoverState.COVERED) && oldValue.equals(CoverState.FLAGGED)) {
+                square.setImage(coveredIcon);
             }
         });
 
@@ -100,7 +104,10 @@ public class FXMLController {
         }
 
         Stage stage = new Stage();
-        Scene scene = new Scene(pane);
+        Scene scene = null;
+        if (pane != null) {
+            scene = new Scene(pane);
+        }
 
         stage.setResizable(false);
         stage.setScene(scene);
