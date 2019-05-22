@@ -76,15 +76,11 @@ public class FXMLController {
         square.setFitWidth(30);
         gridPane.add(square, columnId, rowId);
 
-        /**
-         * Event handler, ktory radzi sobie z kliknieciami myszy, jedyny rodzaj obslugi w grze
-         * Lewy przycisk na zakryte pole - odslon
-         * Prawy przycisk na zakryte - postaw flagę
-         */
         square.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (model.isCovered(columnId, rowId)) {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
                     model.uncoverField(columnId, rowId);
+                    if (model.isBomb(columnId, rowId)) model.uncoverAll(); //Lost game
                 } else if (event.getButton().equals(MouseButton.SECONDARY)) {
                     model.FlagUp(columnId, rowId);
                 }
@@ -93,9 +89,6 @@ public class FXMLController {
             }
         });
 
-        /**
-         * Listener na pola z zaslonkami, po odpowiednim kliknieciu mysza zmiana obrazka
-         */
         model.getCoverProperty(columnId, rowId).addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(CoverState.UNCOVERED)) {
                 switch (model.whichNumber(columnId, rowId)) {
