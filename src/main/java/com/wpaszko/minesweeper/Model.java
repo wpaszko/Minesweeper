@@ -57,7 +57,7 @@ public class Model {
         return field.equals(BombState.BOMB);
     }
 
-    public BombState whichNumeber(int columnId, int rowId) {
+    public BombState whichNumber(int columnId, int rowId) {
         BombState field = bombLocation[columnId][rowId].getValue();
         return field;
     }
@@ -96,6 +96,14 @@ public class Model {
 
     public void uncoverField(int columnId, int rowId) {
         coverLocation[columnId][rowId].setValue(CoverState.UNCOVERED);
+    }
+
+    public void uncoverAll() {
+        for (int columnId = 0; columnId < 20; columnId++) {
+            for (int rowId = 0; rowId < 12; rowId++) {
+                coverLocation[columnId][rowId] = new SimpleObjectProperty<>(CoverState.UNCOVERED);
+            }
+        }
     }
 
     public CoverState getValueOfCover(int columnId, int rowId) {

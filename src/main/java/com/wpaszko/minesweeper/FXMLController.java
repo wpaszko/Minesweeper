@@ -60,13 +60,27 @@ public class FXMLController {
 
     private void addIcon(int columnId, int rowId) {
         Image coveredIcon = new Image("CoveredIcon.jpg");
-        Image uncoveredIcon = new Image("UncoveredIcon.jpg");
+        Image bombIcon = new Image("BombIcon.jpg");
         Image flagIcon = new Image("FlagIcon.jpg");
+        Image zeroIcon = new Image("ZeroIcon.jpg");
+        Image oneIcon = new Image("OneIcon.jpg");
+        Image twoIcon = new Image("TwoIcon.jpg");
+        Image threeIcon = new Image("ThreeIcon.jpg");
+        Image fourIcon = new Image("FourIcon.jpg");
+        Image fiveIcon = new Image("FiveIcon.jpg");
+        Image sixIcon = new Image("SixIcon.jpg");
+        Image sevenIcon = new Image("SevenIcon.jpg");
+        Image eightIcon = new Image("EightIcon.jpg");
         ImageView square = new ImageView(coveredIcon);
         square.setFitHeight(30);
         square.setFitWidth(30);
         gridPane.add(square, columnId, rowId);
 
+        /**
+         * Event handler, ktory radzi sobie z kliknieciami myszy, jedyny rodzaj obslugi w grze
+         * Lewy przycisk na zakryte pole - odslon
+         * Prawy przycisk na zakryte - postaw flagę
+         */
         square.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (model.isCovered(columnId, rowId)) {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
@@ -79,9 +93,44 @@ public class FXMLController {
             }
         });
 
+        /**
+         * Listener na pola z zaslonkami, po odpowiednim kliknieciu mysza zmiana obrazka
+         */
         model.getCoverProperty(columnId, rowId).addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(CoverState.UNCOVERED)) {
-                square.setImage(uncoveredIcon);
+                switch (model.whichNumber(columnId, rowId)) {
+                    case BOMB:
+                        square.setImage(bombIcon);
+                        break;
+                    case ZERO:
+                        square.setImage(zeroIcon);
+                        break;
+                    case ONE:
+                        square.setImage(oneIcon);
+                        break;
+                    case TWO:
+                        square.setImage(twoIcon);
+                        break;
+                    case THREE:
+                        square.setImage(threeIcon);
+                        break;
+                    case FOUR:
+                        square.setImage(fourIcon);
+                        break;
+                    case FIVE:
+                        square.setImage(fiveIcon);
+                        break;
+                    case SIX:
+                        square.setImage(sixIcon);
+                    case SEVEN:
+                        square.setImage(sevenIcon);
+                        break;
+                    case EIGHT:
+                        square.setImage(eightIcon);
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + model.whichNumber(columnId, rowId));
+                }
             } else if (newValue.equals(CoverState.FLAGGED)) {
                 square.setImage(flagIcon);
             } else if (newValue.equals(CoverState.COVERED) && oldValue.equals(CoverState.FLAGGED)) {
