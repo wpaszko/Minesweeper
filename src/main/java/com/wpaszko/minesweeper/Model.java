@@ -2,6 +2,7 @@ package com.wpaszko.minesweeper;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import java.lang.reflect.Array;
@@ -29,52 +30,66 @@ public class Model {
      */
     private IntegerProperty bombs;
 
-    public Model(/*Level lvl*/) {
+    private Level level;
 
-        //bombs.setValue(20);
-        //if(lvl.equals(Level.MEDIUM))bombs.setValue(30);
-        // else if(lvl.equals(Level.HARD))bombs.setValue(40);
-        for (int columnId = 0; columnId < 20; columnId++) {
-            for (int rowId = 0; rowId < 12; rowId++) {
-                coverLocation[columnId][rowId] = new SimpleObjectProperty<>(CoverState.COVERED);
-            }
-        }
+    public Model(Level lvl) {
+        level = lvl;
+        bombs = new SimpleIntegerProperty();
+        flags = new SimpleIntegerProperty();
+        if (level.equals(Level.EASY)) bombs.set(20);
+        else if (level.equals(Level.MEDIUM)) bombs.set(30);
+        else if (level.equals(Level.HARD)) bombs.set(40);
+        flags.setValue(bombs.getValue());
 
+        coverEverythingFirstGame();
+
+        setAllZerosFirstGame();
+
+        createFirstGame();
+    }
+
+    public void newGame() {
+
+        level = Level.EASY;
+
+        bombs.set(20);
+        flags.setValue(bombs.getValue());
+
+        coverEverything();
+
+        setAllZeros();
+
+        createGame();
+    }
+
+    private void setAllZerosFirstGame() {
         for (int columnId = 0; columnId < 20; columnId++) {
             for (int rowId = 0; rowId < 12; rowId++) {
                 bombLocation[columnId][rowId] = new SimpleObjectProperty<>(BombState.ZERO);
             }
         }
+    }
 
-        createGame();
+    private void setAllZeros() {
+        for (int columnId = 0; columnId < 20; columnId++) {
+            for (int rowId = 0; rowId < 12; rowId++) {
+                bombLocation[columnId][rowId].setValue(BombState.ZERO);
+            }
+        }
     }
 
     /**
      * Funkcja jest wywoływana po to, aby utworzyć plansze, to znaczy rozłożyć bomby i opisac cyframi ich lokacje
      */
-    private void createGame() {
-
+    private void createFirstGame() {
         Random rand = new Random();
         int columnId;
         int rowId;
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < bombs.get(); i++) {
             columnId = rand.nextInt(19);
             rowId = rand.nextInt(11);
             bombLocation[columnId][rowId].setValue(BombState.BOMB);
         }
-
-        /*
-        bombLocation[5][5].setValue(BombState.BOMB);
-        bombLocation[4][4].setValue(BombState.ONE);
-        bombLocation[4][5].setValue(BombState.ONE);
-        bombLocation[4][6].setValue(BombState.ONE);
-        bombLocation[5][4].setValue(BombState.ONE);
-        bombLocation[5][6].setValue(BombState.ONE);
-        bombLocation[6][4].setValue(BombState.ONE);
-        bombLocation[6][5].setValue(BombState.ONE);
-        bombLocation[6][6].setValue(BombState.ONE);*/
-
-        //bombLocation[1][1].setValue(BombState.BOMB);
 
         for (columnId = 0; columnId < 20; columnId++) {
             for (rowId = 0; rowId < 12; rowId++) {
@@ -82,7 +97,40 @@ public class Model {
                 //bombLocation[columnId][rowId] = new SimpleObjectProperty<>(BombState.ZERO);
             }
         }
+    }
 
+    private void createGame() {
+        Random rand = new Random();
+        int columnId;
+        int rowId;
+        for (int i = 0; i < bombs.get(); i++) {
+            columnId = rand.nextInt(19);
+            rowId = rand.nextInt(11);
+            bombLocation[columnId][rowId].setValue(BombState.BOMB);
+        }
+
+        for (columnId = 0; columnId < 20; columnId++) {
+            for (rowId = 0; rowId < 12; rowId++) {
+                bombLocation[columnId][rowId].setValue(BombState.ZERO);
+            }
+        }
+    }
+
+    private void coverEverythingFirstGame() {
+        for (int columnId = 0; columnId < 20; columnId++) {
+            for (int rowId = 0; rowId < 12; rowId++) {
+                coverLocation[columnId][rowId] = new SimpleObjectProperty<>(CoverState.COVERED);
+            }
+        }
+    }
+
+    private void coverEverything() {
+        //coverLocation[4][4].setValue(CoverState.COVERED);
+        for (int columnId = 0; columnId < 20; columnId++) {
+            for (int rowId = 0; rowId < 12; rowId++) {
+                coverLocation[columnId][rowId].setValue(CoverState.COVERED);
+            }
+        }
     }
 
     /**
@@ -243,5 +291,13 @@ public class Model {
             }
 
         }
+    }
+
+    public IntegerProperty bombsProperty() {
+        return bombs;
+    }
+
+    public void setBombs(int bombs) {
+        this.bombs.set(bombs);
     }
 }

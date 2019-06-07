@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -18,6 +17,12 @@ import java.io.IOException;
 public class FXMLController {
 
     @FXML
+    private MenuItem levelChoice;
+
+    @FXML
+    private MenuItem newGameChoice;
+
+    @FXML
     private MenuItem menuInfo;
 
     @FXML
@@ -27,28 +32,15 @@ public class FXMLController {
     private ImageView viewTimePic;
 
     @FXML
-    private TextArea textAreaTime;
-
-    @FXML
     private ImageView viewFlagsPic;
-
-    @FXML
-    private TextArea textAreaFlags;
 
     private Model model;
 
 
     public void initialize() {
-        //model = new Model(Level.EASY);
-        model = new Model();
-
+        model = new Model(Level.EASY);
         addGraphics();
-
-        for (int columnId = 0; columnId < 20; columnId++) {
-            for (int rowId = 0; rowId < 12; rowId++) {
-                addIcon(columnId, rowId);
-            }
-        }
+        addSquares();
     }
 
     private void addGraphics() {
@@ -56,6 +48,14 @@ public class FXMLController {
         Image flagsPic = new Image("FlagsPic.jpg");
         viewTimePic.setImage(timePic);
         viewFlagsPic.setImage(flagsPic);
+    }
+
+    private void addSquares() {
+        for (int columnId = 0; columnId < 20; columnId++) {
+            for (int rowId = 0; rowId < 12; rowId++) {
+                addIcon(columnId, rowId);
+            }
+        }
     }
 
     private void addIcon(int columnId, int rowId) {
@@ -160,5 +160,23 @@ public class FXMLController {
         stage.setTitle("Info");
         stage.show();
     }
+
+    @FXML
+    public void newGame() {
+        initialize();
+    }
+
+    @FXML
+    public void newGameMedium() {
+        model = new Model(Level.MEDIUM);
+        addSquares();
+    }
+
+    @FXML
+    public void newGameHard() {
+        model = new Model(Level.HARD);
+        addSquares();
+    }
+
 
 }

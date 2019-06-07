@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
            minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
            fx:controller="com.wpaszko.minesweeper.FXMLController">
@@ -11,10 +12,19 @@
             <children>
                 <MenuBar>
                     <menus>
-                        <Menu mnemonicParsing="false" text="Menu">
+                        <Menu mnemonicParsing="false" text="Gra">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Poziom"/>
-                                <MenuItem mnemonicParsing="false" text="Nowa gra"/>
+                                <MenuItem fx:id="newGameChoice" mnemonicParsing="false" onAction="#newGame"
+                                          text="Nowa gra"/>
+                                <MenuItem fx:id="levelEasy" mnemonicParsing="false" onAction="#newGame" text="Łatwy"/>
+                                <MenuItem fx:id="levelMedium" mnemonicParsing="false" onAction="#newGameMedium"
+                                          text="Średni"/>
+                                <MenuItem fx:id="levelHard" mnemonicParsing="false" onAction="#newGameHard"
+                                          text="Trudny"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Pomoc">
+                            <items>
                                 <MenuItem fx:id="menuInfo" mnemonicParsing="false" onAction="#openInfoWindow"
                                           text="Info"/>
                             </items>
@@ -63,10 +73,10 @@
                     <children>
                         <ImageView fx:id="viewTimePic" fitHeight="60.0" fitWidth="59.0" mouseTransparent="true"
                                    pickOnBounds="true" preserveRatio="true"/>
-                        <TextArea fx:id="textAreaTime" mouseTransparent="true" prefHeight="60.0" prefWidth="100.0"/>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
                         <ImageView fx:id="viewFlagsPic" fitHeight="60.0" fitWidth="59.0" layoutX="235.0" layoutY="10.0"
                                    mouseTransparent="true" pickOnBounds="true" preserveRatio="true"/>
-                        <TextArea fx:id="textAreaFlags" mouseTransparent="true" prefHeight="60.0" prefWidth="100.0"/>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
                     </children>
                 </HBox>
             </children>
