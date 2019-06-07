@@ -29,8 +29,11 @@ public class Model {
      */
     private IntegerProperty bombs;
 
-    public Model() {
+    public Model(/*Level lvl*/) {
 
+        //bombs.setValue(20);
+        //if(lvl.equals(Level.MEDIUM))bombs.setValue(30);
+        // else if(lvl.equals(Level.HARD))bombs.setValue(40);
         for (int columnId = 0; columnId < 20; columnId++) {
             for (int rowId = 0; rowId < 12; rowId++) {
                 coverLocation[columnId][rowId] = new SimpleObjectProperty<>(CoverState.COVERED);
@@ -50,6 +53,7 @@ public class Model {
      * Funkcja jest wywoływana po to, aby utworzyć plansze, to znaczy rozłożyć bomby i opisac cyframi ich lokacje
      */
     private void createGame() {
+
         Random rand = new Random();
         int columnId;
         int rowId;
@@ -216,4 +220,28 @@ public class Model {
     }
 
 
+    public void openEmpties(int columnId, int rowId) {
+        int i;
+        int j;
+        coverLocation[columnId][rowId].setValue(CoverState.UNCOVERED);
+
+        for (i = (columnId - 1); i <= (columnId + 1); i++) {
+            if (i < 0 || i > 19) {
+                continue;
+            }
+            for (j = (rowId - 1); j <= (rowId + 1); j++) {
+
+                if (j < 0 || j > 11) {
+                    continue;
+                }
+                if (!(i == columnId && j == rowId)) {
+                    if (coverLocation[i][j].getValue().equals(CoverState.COVERED)) {
+                        if (bombLocation[i][j].getValue().equals(BombState.ZERO)) openEmpties(i, j);
+                        else if (!(bombLocation[i][j].getValue().equals(BombState.BOMB))) uncoverField(i, j);
+                    }
+                }
+            }
+
+        }
+    }
 }

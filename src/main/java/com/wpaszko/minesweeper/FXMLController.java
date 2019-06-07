@@ -39,7 +39,7 @@ public class FXMLController {
 
 
     public void initialize() {
-
+        //model = new Model(Level.EASY);
         model = new Model();
 
         addGraphics();
@@ -79,8 +79,12 @@ public class FXMLController {
         square.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (model.isCovered(columnId, rowId)) {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    model.uncoverField(columnId, rowId);
                     if (model.isBomb(columnId, rowId)) model.uncoverAll(); //Lost game
+                        //TODO 1 - wcisnieto bombe
+                    else if (model.getBombProperty(columnId, rowId).getValue().equals(BombState.ZERO)) {
+                        model.openEmpties(columnId, rowId);
+                    }
+                    model.uncoverField(columnId, rowId);
                 } else if (event.getButton().equals(MouseButton.SECONDARY)) {
                     model.FlagUp(columnId, rowId);
                 }
