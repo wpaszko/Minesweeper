@@ -71,12 +71,9 @@
                 </GridPane>
                 <HBox alignment="CENTER" minHeight="60.0">
                     <children>
-                        <ImageView fx:id="viewTimePic" fitHeight="60.0" fitWidth="59.0" mouseTransparent="true"
-                                   pickOnBounds="true" preserveRatio="true"/>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
                         <ImageView fx:id="viewFlagsPic" fitHeight="60.0" fitWidth="59.0" layoutX="235.0" layoutY="10.0"
                                    mouseTransparent="true" pickOnBounds="true" preserveRatio="true"/>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+                        <Text fx:id="flagsText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
                     </children>
                 </HBox>
             </children>

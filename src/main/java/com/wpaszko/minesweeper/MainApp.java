@@ -23,13 +23,11 @@ public class MainApp extends Application {
 
         StackPane stackPane = loader.load();
 
-        FXMLController controller = loader.getController();
-
         Scene scene = new Scene(stackPane);
 
         stage.setResizable(false);
         stage.setScene(scene);
-        stage.setTitle("Minesweeper");
+        stage.setTitle("Saper");
         stage.show();
     }
 
