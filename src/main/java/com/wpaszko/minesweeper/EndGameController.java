@@ -6,6 +6,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * Kontroler okienka końca gry
+ */
 public class EndGameController {
 
     @FXML
@@ -13,6 +16,11 @@ public class EndGameController {
 
     private boolean win;
 
+    /**
+     * Służy do sutalenia, czy gra zakończyła się wygraną, czy porażką użytkownika
+     *
+     * @param win Prawda, jeśli użytkownik wygrał grę.
+     */
     public EndGameController(boolean win) {
         this.win = win;
     }
@@ -20,9 +28,9 @@ public class EndGameController {
     @FXML
     private void initialize() {
         if (win)
-            okText.setText("Wygrana");
+            okText.setText("Wygrana!");
         else
-            okText.setText("Porażka");
+            okText.setText("Porażka!");
     }
 
     @FXML

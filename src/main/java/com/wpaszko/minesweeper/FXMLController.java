@@ -16,9 +16,15 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * <code>FXMLController</code> jest kontrolerem
+ * odpowiadającym za widok planszy i obsługę zdarzeń,
+ * które wpływają na model.
+ * Gdy użytkownik działa na widok
+ * to kontroler wywołuje odpowiednią metodę powodującą
+ * zmianę w modelu.
+ */
 public class FXMLController {
-
-
     @FXML
     private Button buttonNewGameWin;
 
@@ -35,9 +41,6 @@ public class FXMLController {
     private GridPane gridPane;
 
     @FXML
-    private ImageView viewTimePic;
-
-    @FXML
     private ImageView viewFlagsPic;
 
     @FXML
@@ -45,20 +48,31 @@ public class FXMLController {
 
     private Model model;
 
-
+    /**
+     * Kontroler zosyaje zainicjalizowany przy użyciu metody initialize,
+     * wykorzystuje przy tym metodę pozwalającą na utowrzenie modelu gry.
+     */
     public void initialize() {
-        model = new Model(Level.EASY, gridPane.getColumnCount(), gridPane.getRowCount());
+        createGame(Level.EASY);
+    }
+
+    //tworzy obiekt Model, ustawia listenery na odpowiednie obiekty
+    private void createGame(Level level) {
+        model = new Model(level, gridPane.getColumnCount(), gridPane.getRowCount());
         flagsText.setText(model.getFlagsValue().toString());
         model.getFlagsProperty().addListener((observable, oldValue, newValue) -> flagsText.setText(newValue.toString()));
         addGraphics();
         addSquares();
+        gridPane.setDisable(false);
     }
 
+    //wygrywa grafikę pod planszą
     private void addGraphics() {
         Image flagsPic = new Image("FlagsPic.jpg");
         viewFlagsPic.setImage(flagsPic);
     }
 
+    //dodaje pola gry, na które ustawi listenery
     private void addSquares() {
         for (int columnId = 0; columnId < gridPane.getColumnCount(); columnId++) {
             for (int rowId = 0; rowId < gridPane.getRowCount(); rowId++) {
@@ -67,6 +81,7 @@ public class FXMLController {
         }
     }
 
+    //wygrywa odpowiednie grafiki do pól, ustawia listenery
     private void addIcon(int columnId, int rowId) {
         Image coveredIcon = new Image("CoveredIcon.jpg");
 
@@ -79,25 +94,22 @@ public class FXMLController {
         square.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (model.isCovered(columnId, rowId)) {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    if (model.isBomb(columnId, rowId)) //model.uncoverAll()
+                    if (model.isBomb(columnId, rowId)) {
+                        model.uncoverAll();
                         endGame(false); //Lost game
-
-                    else if (model.getBombProperty(columnId, rowId).getValue().equals(BombState.ZERO)) {
+                    } else if (model.getBombProperty(columnId, rowId).getValue().equals(BombState.ZERO)) {
                         model.openEmpties(columnId, rowId);
                     }
                     model.uncoverField(columnId, rowId);
-                    System.out.println(model.getCoveredFieldsCounter());
-                    System.out.println(model.getCoveredFieldsCounter());
                     if (model.getCoveredFieldsCounter() == model.getBombsValue()) {
-                        endGame(true);
+                        endGame(true); //Won game
+                        model.uncoverBombs();
                     }
                 } else if (event.getButton().equals(MouseButton.SECONDARY)) {
                     model.FlagUp(columnId, rowId);
-                    model.flagOnBoard();
                 }
             } else if ((model.isFlagged(columnId, rowId)) && (event.getButton().equals(MouseButton.SECONDARY))) {
                 model.FlagDown(columnId, rowId);
-                model.flagOffBoard();
             }
         });
 
@@ -156,6 +168,9 @@ public class FXMLController {
     }
 
     @FXML
+    /**
+     * Wyświetla okienku z informacją, gdy użytkownik kliknie "O grze" w menu gry.
+     */
     public void openInfoWindow() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/AboutGame.fxml"));
@@ -180,6 +195,10 @@ public class FXMLController {
     }
 
     @FXML
+    /**
+     * Uruchomi kontroler okienka końca gry i wyświetli okienko
+     * Unieruchamia planszę gry, aby można było ją obejrzeć
+     */
     public void endGame(boolean win) {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/EndOfGame.fxml"));
@@ -201,28 +220,33 @@ public class FXMLController {
         //stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+
+        gridPane.setDisable(true);
     }
 
 
     @FXML
+    /**
+     * Tworzy nową grę, po wyborze "Łatwy" z menu
+     */
     public void newGame() {
-        initialize();
+        createGame(Level.EASY);
     }
 
     @FXML
+    /**
+     * Tworzy nową grę po wyborze "Średni" z menu
+     */
     public void newGameMedium() {
-        model = new Model(Level.MEDIUM, gridPane.getColumnCount(), gridPane.getRowCount());
-        flagsText.setText(model.getFlagsValue().toString());
-        model.getFlagsProperty().addListener((observable, oldValue, newValue) -> flagsText.setText(newValue.toString()));
-        addSquares();
+        createGame(Level.MEDIUM);
     }
 
     @FXML
+    /**
+     * Tworzy nową grę po wyborze "Trudny" z menu
+     */
     public void newGameHard() {
-        model = new Model(Level.HARD, gridPane.getColumnCount(), gridPane.getRowCount());
-        flagsText.setText(model.getFlagsValue().toString());
-        model.getFlagsProperty().addListener((observable, oldValue, newValue) -> flagsText.setText(newValue.toString()));
-        addSquares();
+        createGame(Level.HARD);
     }
 
 }

@@ -1,82 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.Blend?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-           minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
+           minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1"
            fx:controller="com.wpaszko.minesweeper.FXMLController">
     <children>
         <VBox prefHeight="200.0" prefWidth="100.0">
             <children>
-                <MenuBar>
-                    <menus>
-                        <Menu mnemonicParsing="false" text="Gra">
-                            <items>
-                                <MenuItem fx:id="newGameChoice" mnemonicParsing="false" onAction="#newGame"
-                                          text="Nowa gra"/>
-                                <MenuItem fx:id="levelEasy" mnemonicParsing="false" onAction="#newGame" text="Łatwy"/>
-                                <MenuItem fx:id="levelMedium" mnemonicParsing="false" onAction="#newGameMedium"
-                                          text="Średni"/>
-                                <MenuItem fx:id="levelHard" mnemonicParsing="false" onAction="#newGameHard"
-                                          text="Trudny"/>
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Pomoc">
-                            <items>
-                                <MenuItem fx:id="menuInfo" mnemonicParsing="false" onAction="#openInfoWindow"
-                                          text="Info"/>
-                            </items>
-                        </Menu>
-                    </menus>
-                </MenuBar>
-                <GridPane fx:id="gridPane">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-                    </rowConstraints>
-                </GridPane>
-                <HBox alignment="CENTER" minHeight="60.0">
+                <VBox prefHeight="200.0" prefWidth="100.0">
                     <children>
-                        <ImageView fx:id="viewFlagsPic" fitHeight="60.0" fitWidth="59.0" layoutX="235.0" layoutY="10.0"
-                                   mouseTransparent="true" pickOnBounds="true" preserveRatio="true"/>
-                        <Text fx:id="flagsText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+                        <MenuBar>
+                            <menus>
+                                <Menu mnemonicParsing="false" text="Poziom">
+                                    <items>
+                                        <MenuItem fx:id="levelEasy" mnemonicParsing="false" onAction="#newGame"
+                                                  text="Łatwy"/>
+                                        <MenuItem fx:id="levelMedium" mnemonicParsing="false" onAction="#newGameMedium"
+                                                  text="Średni"/>
+                                        <MenuItem fx:id="levelHard" mnemonicParsing="false" onAction="#newGameHard"
+                                                  text="Trudny"/>
+                                    </items>
+                                </Menu>
+                                <Menu mnemonicParsing="false" text="Pomoc">
+                                    <items>
+                                        <MenuItem fx:id="menuInfo" mnemonicParsing="false" onAction="#openInfoWindow"
+                                                  text="Info"/>
+                                    </items>
+                                </Menu>
+                            </menus>
+                        </MenuBar>
+                        <GridPane fx:id="gridPane" alignment="CENTER">
+                            <columnConstraints>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                                <RowConstraints valignment="CENTER" vgrow="ALWAYS"/>
+                            </rowConstraints>
+                        </GridPane>
                     </children>
+                </VBox>
+                <HBox alignment="CENTER" minHeight="60.0" spacing="20.0">
+                    <children>
+                        <ImageView fx:id="viewFlagsPic" blendMode="SRC_ATOP" fitHeight="60.0" fitWidth="59.0"
+                                   layoutX="235.0" layoutY="10.0" mouseTransparent="true" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <effect>
+                                <Blend/>
+                            </effect>
+                        </ImageView>
+                        <Text fx:id="flagsText" fill="#550333" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                            <font>
+                                <Font name="Serif Bold" size="36.0"/>
+                            </font>
+                        </Text>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                    </VBox.margin>
                 </HBox>
             </children>
+            <StackPane.margin>
+                <Insets/>
+            </StackPane.margin>
         </VBox>
     </children>
 </StackPane>
