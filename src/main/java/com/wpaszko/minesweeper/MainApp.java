@@ -12,10 +12,6 @@ public class MainApp extends Application {
         launch(args);
     }
 
-
-    /**
-     * Connection between scene and app
-     */
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader();

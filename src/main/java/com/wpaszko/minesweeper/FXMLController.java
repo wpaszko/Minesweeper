@@ -3,8 +3,6 @@ package com.wpaszko.minesweeper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -25,17 +23,6 @@ import java.io.IOException;
  * zmianę w modelu.
  */
 public class FXMLController {
-    @FXML
-    private Button buttonNewGameWin;
-
-    @FXML
-    private MenuItem levelChoice;
-
-    @FXML
-    private MenuItem newGameChoice;
-
-    @FXML
-    private MenuItem menuInfo;
 
     @FXML
     private GridPane gridPane;
@@ -74,14 +61,41 @@ public class FXMLController {
 
     //dodaje pola gry, na które ustawi listenery
     private void addSquares() {
-        for (int columnId = 0; columnId < gridPane.getColumnCount(); columnId++) {
-            for (int rowId = 0; rowId < gridPane.getRowCount(); rowId++) {
+        for (int columnId = 0; columnId < gridPane.getColumnCount(); columnId++)
+            for (int rowId = 0; rowId < gridPane.getRowCount(); rowId++)
                 addIcon(columnId, rowId);
+    }
+
+    //obsługa myszy
+    private void handleMouseEvent(MouseEvent event, int columnId, int rowId) {
+        if (event.getButton().equals(MouseButton.PRIMARY)) leftButtonMouse(columnId, rowId);
+        else if (event.getButton().equals(MouseButton.SECONDARY)) rightButtonMouse(columnId, rowId);
+    }
+
+    //obsługa lewego przycisku myszy
+    private void leftButtonMouse(int columnId, int rowId) {
+        if (model.isCovered(columnId, rowId)) {
+            if (model.isBomb(columnId, rowId)) {
+                model.uncoverAll();
+                endGame(false); //Lost game
+            } else if (model.getBombProperty(columnId, rowId).getValue().equals(BombState.ZERO)) {
+                model.openEmpties(columnId, rowId);
+            }
+            model.uncoverField(columnId, rowId);
+            if (model.getCoveredFieldsCounter() == model.getBombsValue()) {
+                endGame(true); //Won game
+                model.uncoverBombs();
             }
         }
     }
 
-    //wygrywa odpowiednie grafiki do pól, ustawia listenery
+    //obsługa prawego przycisku myszy
+    private void rightButtonMouse(int columnId, int rowId) {
+        if (model.isCovered(columnId, rowId)) model.FlagUp(columnId, rowId);
+        else if (model.isFlagged(columnId, rowId)) model.FlagDown(columnId, rowId);
+    }
+
+    //wgrywa odpowiednie grafiki do pól, ustawia listenery
     private void addIcon(int columnId, int rowId) {
         Image coveredIcon = new Image("CoveredIcon.jpg");
 
@@ -91,27 +105,7 @@ public class FXMLController {
         square.setFitHeight(30);
         square.setFitWidth(30);
         gridPane.add(square, columnId, rowId);
-        square.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (model.isCovered(columnId, rowId)) {
-                if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    if (model.isBomb(columnId, rowId)) {
-                        model.uncoverAll();
-                        endGame(false); //Lost game
-                    } else if (model.getBombProperty(columnId, rowId).getValue().equals(BombState.ZERO)) {
-                        model.openEmpties(columnId, rowId);
-                    }
-                    model.uncoverField(columnId, rowId);
-                    if (model.getCoveredFieldsCounter() == model.getBombsValue()) {
-                        endGame(true); //Won game
-                        model.uncoverBombs();
-                    }
-                } else if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    model.FlagUp(columnId, rowId);
-                }
-            } else if ((model.isFlagged(columnId, rowId)) && (event.getButton().equals(MouseButton.SECONDARY))) {
-                model.FlagDown(columnId, rowId);
-            }
-        });
+        square.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> handleMouseEvent(event, columnId, rowId));
 
         model.getCoverProperty(columnId, rowId).addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(CoverState.UNCOVERED)) {
@@ -167,14 +161,31 @@ public class FXMLController {
 
     }
 
-    @FXML
     /**
      * Wyświetla okienku z informacją, gdy użytkownik kliknie "O grze" w menu gry.
      */
+    @FXML
     public void openInfoWindow() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/AboutGame.fxml"));
 
+        createNewWindow(loader);
+    }
+
+    /*
+     * Uruchomi kontroler okienka końca gry i wyświetli okienko
+     * Unieruchamia planszę gry, aby można było ją obejrzeć
+     */
+    private void endGame(boolean win) {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/EndOfGame.fxml"));
+        loader.setController(new EndGameController(win));
+
+        createNewWindow(loader);
+        gridPane.setDisable(true);
+    }
+
+    private void createNewWindow(FXMLLoader loader) {
         Pane pane = null;
         try {
             pane = loader.load();
@@ -190,61 +201,30 @@ public class FXMLController {
 
         stage.setResizable(false);
         stage.setScene(scene);
-        stage.setTitle("Info");
         stage.show();
     }
 
-    @FXML
-    /**
-     * Uruchomi kontroler okienka końca gry i wyświetli okienko
-     * Unieruchamia planszę gry, aby można było ją obejrzeć
-     */
-    public void endGame(boolean win) {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/EndOfGame.fxml"));
-        loader.setController(new EndGameController(win));
 
-        Pane pane = null;
-        try {
-            pane = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Stage stage = new Stage();
-        Scene scene = null;
-        if (pane != null) {
-            scene = new Scene(pane);
-        }
-
-        //stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
-
-        gridPane.setDisable(true);
-    }
-
-
-    @FXML
     /**
      * Tworzy nową grę, po wyborze "Łatwy" z menu
      */
+    @FXML
     public void newGame() {
         createGame(Level.EASY);
     }
 
-    @FXML
     /**
      * Tworzy nową grę po wyborze "Średni" z menu
      */
+    @FXML
     public void newGameMedium() {
         createGame(Level.MEDIUM);
     }
 
-    @FXML
     /**
      * Tworzy nową grę po wyborze "Trudny" z menu
      */
+    @FXML
     public void newGameHard() {
         createGame(Level.HARD);
     }

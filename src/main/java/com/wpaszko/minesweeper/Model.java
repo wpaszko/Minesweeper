@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import java.lang.reflect.Array;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -23,10 +24,10 @@ public class Model {
     private ObjectProperty<CoverState>[][] coverLocation = (ObjectProperty<CoverState>[][]) Array.newInstance(ObjectProperty.class, 20, 12);
 
     //obserwowany obiekt, ile flag pozostało do ustawienia.
-    private IntegerProperty flags;
+    private IntegerProperty flags = new SimpleIntegerProperty();
 
     //ile bomb jest w grze = ile flag ma użytkownik.
-    private IntegerProperty bombs;
+    private IntegerProperty bombs = new SimpleIntegerProperty();
 
     //licznik ilości zakrytych pól
     private int coveredFieldsCounter;
@@ -40,6 +41,18 @@ public class Model {
     //Na jakim poziome trudności odbywa się gra
     private Level level;
 
+    private Map<Integer, BombState> bombValueMap = Map.of(
+            0, BombState.ZERO,
+            1, BombState.ONE,
+            2, BombState.TWO,
+            3, BombState.THREE,
+            4, BombState.FOUR,
+            5, BombState.FIVE,
+            6, BombState.SIX,
+            7, BombState.SEVEN,
+            8, BombState.EIGHT
+    );
+
     /**
      * Konstruktor obiektu Model tworzy planszę do gry, rozstawia bomby i zasłania wszystkie pola.
      * Poza tym, ustala liczbę flag na podstawie ilości bomb w grze.
@@ -52,8 +65,6 @@ public class Model {
         width = maxColumn;
         height = maxRow;
         level = lvl;
-        bombs = new SimpleIntegerProperty();
-        flags = new SimpleIntegerProperty();
         coveredFieldsCounter = width * height;
         setAmountOfBombs();
         flags.setValue(bombs.getValue());
@@ -74,11 +85,9 @@ public class Model {
 
     //Tworzy obiekty tablicy wartości pól i ustawia wszystkie pola na puste
     private void setAllZeros() {
-        for (int columnId = 0; columnId < width; columnId++) {
-            for (int rowId = 0; rowId < height; rowId++) {
+        for (int columnId = 0; columnId < width; columnId++)
+            for (int rowId = 0; rowId < height; rowId++)
                 bombLocation[columnId][rowId] = new SimpleObjectProperty<>(BombState.ZERO);
-            }
-        }
     }
 
     //Służy do rozstawienia bomb i określenia wartości pół naokoło bomb
@@ -98,11 +107,9 @@ public class Model {
         }
 
 
-        for (columnId = 0; columnId < width; columnId++) {
-            for (rowId = 0; rowId < height; rowId++) {
-                bombLocation[columnId][rowId] = new SimpleObjectProperty<>(howManyBombsAround(columnId, rowId));
-            }
-        }
+        for (columnId = 0; columnId < width; columnId++)
+            for (rowId = 0; rowId < height; rowId++)
+                bombLocation[columnId][rowId].setValue(howManyBombsAround(columnId, rowId));
     }
 
     //ustawia wartości wszystkich pól na zasłonięte
@@ -116,60 +123,24 @@ public class Model {
 
     //oblicza wartośc pola na podstawie tego, ile bomb jest naokoło
     private BombState howManyBombsAround(int columnId, int rowId) {
-        BombState result = BombState.BOMB;
         if (!bombLocation[columnId][rowId].getValue().equals(BombState.BOMB)) {
             int howMany = 0;
-            int i;
-            int j;
             //policz ile bomb jest naokoło pola
-            for (i = (columnId - 1); i <= (columnId + 1); i++) {
-                if (i < 0 || i > width - 1) //warunek brzegowy
+            for (int i = (columnId - 1); i <= (columnId + 1); i++) {
+                if (!(i < 0 || i > width - 1)) //warunek brzegowy
                 {
-                    continue;
-                }
-                for (j = (rowId - 1); j <= (rowId + 1); j++) {
-
-                    if (j < 0 || j > height - 1) //warunek brzegowy
-                    {
-                        continue;
+                    for (int j = (rowId - 1); j <= (rowId + 1); j++) {
+                        if (!(j < 0 || j > height - 1)) //warunek brzegowy
+                            if (!(i == columnId && j == rowId)) //jeśli jest bomba, dodaj do sumy
+                                if (bombLocation[i][j].getValue().equals(BombState.BOMB)) howMany = howMany + 1;
                     }
-                    if (!(i == columnId && j == rowId)) //jeśli jest bomba, dodaj do sumy
-                        if (bombLocation[i][j].getValue().equals(BombState.BOMB)) howMany = howMany + 1;
                 }
             }
 
-            switch (howMany) //w zależnosci od sumy ustaw wartość pola
-            {
-                case 0:
-                    result = BombState.ZERO;
-                    break;
-                case 1:
-                    result = BombState.ONE;
-                    break;
-                case 2:
-                    result = BombState.TWO;
-                    break;
-                case 3:
-                    result = BombState.THREE;
-                    break;
-                case 4:
-                    result = BombState.FOUR;
-                    break;
-                case 5:
-                    result = BombState.FIVE;
-                    break;
-                case 6:
-                    result = BombState.SIX;
-                    break;
-                case 7:
-                    result = BombState.SEVEN;
-                    break;
-                case 8:
-                    result = BombState.EIGHT;
-                    break;
-            }
+            return bombValueMap.get(howMany);
         }
-        return result;
+
+        return BombState.BOMB;
     }
 
     /**
@@ -267,11 +238,9 @@ public class Model {
      * Używane w wypadku przegranej gry.
      */
     public void uncoverAll() {
-        for (int columnId = 0; columnId < 20; columnId++) {
-            for (int rowId = 0; rowId < 12; rowId++) {
+        for (int columnId = 0; columnId < 20; columnId++)
+            for (int rowId = 0; rowId < 12; rowId++)
                 coverLocation[columnId][rowId].setValue(CoverState.UNCOVERED);
-            }
-        }
     }
 
     /**
@@ -279,12 +248,10 @@ public class Model {
      * Używane w przypadku wygranej.
      */
     public void uncoverBombs() {
-        for (int columnId = 0; columnId < 20; columnId++) {
-            for (int rowId = 0; rowId < 12; rowId++) {
+        for (int columnId = 0; columnId < 20; columnId++)
+            for (int rowId = 0; rowId < 12; rowId++)
                 if (bombLocation[columnId][rowId].getValue().equals(BombState.BOMB) && coverLocation[columnId][rowId].getValue().equals(CoverState.COVERED))
                     coverLocation[columnId][rowId].setValue(CoverState.UNCOVERED);
-            }
-        }
     }
 
     /**
@@ -317,20 +284,11 @@ public class Model {
      * @param rowId rząd wybranego pola
      */
     public void openEmpties(int columnId, int rowId) {
-        int i;
-        int j;
         coverLocation[columnId][rowId].setValue(CoverState.UNCOVERED);
 
-        for (i = (columnId - 1); i <= (columnId + 1); i++) {
-            if (i < 0 || i > 19) {
-                continue;
-            }
-            for (j = (rowId - 1); j <= (rowId + 1); j++) {
-
-                if (j < 0 || j > 11) {
-                    continue;
-                }
-                if (!(i == columnId && j == rowId)) {
+        for (int i = (columnId - 1); i <= (columnId + 1); i++) {
+            for (int j = (rowId - 1); j <= (rowId + 1); j++) {
+                if (!(i < 0 || i > width - 1) && !(j < 0 || j > height - 1) && !(i == columnId && j == rowId)) {
                     if (coverLocation[i][j].getValue().equals(CoverState.COVERED)) {
                         if (bombLocation[i][j].getValue().equals(BombState.ZERO)) {
                             openEmpties(i, j);
@@ -341,7 +299,6 @@ public class Model {
                     }
                 }
             }
-
         }
     }
 
